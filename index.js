@@ -1,30 +1,55 @@
 import inquirer from "inquirer";
-const answers = await inquirer.prompt([
-    {
-        type: "number",
-        name: "numone",
-        message: "kindly inter your first number",
-    },
-    { type: "number",
-        name: "numtwo",
-        message: "kindly inter your second number",
-    },
-    {
-        type: "list",
-        name: "opperator",
-        choices: ['addition', 'subtraction', 'multiplication', "division"],
-        message: "Sellect your opperator:"
-    }
-]);
-if (answers.opperator === "addition") {
-    console.log(answers.numone + answers.numtwo);
+let todo = [];
+async function createtodo(arr) {
+    do {
+        let ans = await inquirer.prompt({
+            message: "Select an operation",
+            type: "list",
+            name: "select",
+            choices: ["add", "update", "delete", "view", "exit"]
+        });
+        if (ans.select == "add") {
+            let addtodo = await inquirer.prompt({
+                message: "add item...",
+                type: "input",
+                name: "todo",
+            });
+            todo.push(addtodo.todo);
+            console.log(todo);
+        }
+        if (ans.select == "update") {
+            let updatetodo = await inquirer.prompt([{
+                    message: "select item",
+                    type: "list",
+                    choices: todo.map(item => item),
+                    name: "utodo"
+                }]);
+            let addtodo = await inquirer.prompt({
+                message: "add item...",
+                type: "input",
+                name: "todo",
+            });
+            let newtodos = todo.filter(val => val !== updatetodo.utodo);
+            todo = [...newtodos, addtodo.todo];
+            console.log(todo);
+        }
+        if (ans.select == "delete") {
+            let deletetodo = await inquirer.prompt([{
+                    message: "select item",
+                    type: "list",
+                    choices: todo.map(item => item),
+                    name: "dtodo"
+                }]);
+            let newtodos = todo.filter(val => val !== deletetodo.dtodo);
+            todo = [...newtodos];
+            console.log(todo);
+        }
+        if (ans.select == "view") {
+            console.log(todo);
+        }
+        if (ans.select == "exit") {
+            return;
+        }
+    } while (true);
 }
-if (answers.opperator === "subtraction") {
-    console.log(answers.numone - answers.numtwo);
-}
-if (answers.opperator === "multiplication") {
-    console.log(answers.numone * answers.numtwo);
-}
-if (answers.opperator === "division") {
-    console.log(answers.numone / answers.numtwo);
-}
+createtodo(todo);
